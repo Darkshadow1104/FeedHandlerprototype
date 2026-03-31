@@ -15,7 +15,7 @@
 #define GREEN   "\033[32m"
 #define YELLOW  "\033[33m"
 #define BOLD    "\033[1m"
-
+#define CYAN   "\033[36m"
 
 
 class Visualizer {
@@ -54,12 +54,16 @@ private:
     void render() {
         clear_screen();
 
-        std::cout << "=== NSE Market Data Feed Handler ===\n";
+        //std::cout << "=== NSE Market Data Feed Handler ===\n";
+
+	 std::cout << CYAN
+              << "=== NSE Market Data Feed Handler ===\n"
+              << RESET;
 
         //  Latency stats
-  /*
-  	auto stats = tracker.get_stats();
-
+  
+  //	auto stats = tracker.get_stats();
+/*
         std::cout << "Latency(ns): "
                   << "p50=" << stats.p50
                   << " p99=" << stats.p99
@@ -113,12 +117,17 @@ std::cout << std::fixed << std::setprecision(2);
 		    color = RED;
 
 
+
+
+
+
            std::cout << std::left << std::setw(12) << symbols[r.id]
           << std::right << std::setw(12) << std::fixed << std::setprecision(2) << GREEN <<r.s.bid << RESET
-          << std::setw(12) <<  RED <<r.s.ask << RESET
-          << std::setw(12) << color <<  r.s.last_price << RESET
-          << std::setw(12) <<  r.s.updates
+          << std::setw(12)<<  RED <<r.s.ask << RESET
+          << std::setw(12)<< color <<  r.s.last_price << RESET
+          << std::setw(12)<<  r.s.updates
           << "\n";
+	   
 
 /*
 	    std::cout << symbols[r.id] << "              "

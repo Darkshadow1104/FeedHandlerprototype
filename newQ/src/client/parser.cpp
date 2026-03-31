@@ -435,9 +435,7 @@ void parse() {
         if (write_pos - read_pos < msg_size)
             break;
 
-
-//	std::cout<<"msg_size:"<<msg_size<<std::endl;
-        uint32_t received_checksum=0;
+        uint32_t received_checksum;
         memcpy(&received_checksum,
                buffer + read_pos + msg_size - 4, 4);
 
@@ -463,7 +461,7 @@ uint32_t computed_checksum =
             }
         }
 
-     //   last_seq = hdr.seq;
+        //last_seq = hdr.seq;
 
         process(hdr, buffer + read_pos);
 
@@ -520,6 +518,9 @@ uint32_t computed_checksum =
 
         auto stats = tracker.get_stats();
 
+	tracker.export_csv("../latency.csv");
+        
+	/*
         std::cout << "\n=== Latency Stats ===\n";
         std::cout << "Count: " << stats.count << "\n";
         std::cout << "Min: " << stats.min << " ns\n";
@@ -528,6 +529,7 @@ uint32_t computed_checksum =
         std::cout << "p50: " << stats.p50 << " ns\n";
         std::cout << "p99: " << stats.p99 << " ns\n";
         std::cout << "p999: " << stats.p999 << " ns\n";
+	*/
     }
 }
 	

@@ -4,7 +4,7 @@
 #include <atomic>
 #include <cstdint>
 #include <limits>
-
+#include <fstream>
 class LatencyTracker {
     static constexpr size_t MAX_SAMPLES = 1'000'000;
 
@@ -90,4 +90,19 @@ public:
 
         return s;
     }
+
+ void export_csv(const std::string& file) {
+        std::ofstream out(file);
+        out << "bucket_ns,count\n";
+
+        for (size_t i = 0; i < NUM_BUCKETS; i++) {
+            out << (1ULL << i) << "," << buckets[i].load() << "\n";
+        }
+    }
+
+
+
+
+
+
 };
