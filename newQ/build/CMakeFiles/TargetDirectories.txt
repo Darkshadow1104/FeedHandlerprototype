@@ -1,0 +1,4 @@
+/home/nitesh11/newQ/build/CMakeFiles/server.dir
+/home/nitesh11/newQ/build/CMakeFiles/client.dir
+/home/nitesh11/newQ/build/CMakeFiles/edit_cache.dir
+/home/nitesh11/newQ/build/CMakeFiles/rebuild_cache.dir
