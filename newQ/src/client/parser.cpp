@@ -176,7 +176,10 @@ class Parser {
 		}
 		last_seq = hdr.seq;
 
-		uint64_t latency = now_ns() - hdr.timestamp;
+                uint64_t latency=0;
+		if( hdr.timestamp < now_ns()) latency = now_ns() - hdr.timestamp;
+		else std::cout<<"wrong start time:"<<std::endl;
+
 		tracker.record(latency);
 
 		if (hdr.type == QUOTE) {
@@ -190,16 +193,20 @@ class Parser {
 			cache.updateTrade(hdr.symbol, t.price, t.qty);
 		}
 
-		static int counter = 0;
+		 static int counter = 0;
 		if (++counter % 100000 == 0) {
+
+ auto stats = tracker.get_stats();
+
+                        tracker.export_csv("latency.csv");
 			std::cout << "Processed 100K messages | Gaps: "
 				<< gap_count << "\n";
 
-			auto stats = tracker.get_stats();
+		//	auto stats = tracker.get_stats();
 
-			tracker.export_csv("latency.csv");
+		//	tracker.export_csv("latency.csv");
 
-			/*
+			
 			   std::cout << "\n=== Latency Stats ===\n";
 			   std::cout << "Count: " << stats.count << "\n";
 			   std::cout << "Min: " << stats.min << " ns\n";
@@ -208,7 +215,7 @@ class Parser {
 			   std::cout << "p50: " << stats.p50 << " ns\n";
 			   std::cout << "p99: " << stats.p99 << " ns\n";
 			   std::cout << "p999: " << stats.p999 << " ns\n";
-			   */
+			   
 		}
 	}
 

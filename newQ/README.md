@@ -53,3 +53,78 @@ TATASTEEL          4953.80       4957.93           4992.18           0.01       
 UBL                2082.14       2085.71           2089.19           0.06           28502
 PNB                924.82       926.39           926.30           0.01           28502
 
+
+############################################################################################################################################################
+If you want to see the latency stats uncomment its printing in src/client/parser.cpp -> process() function.
+
+Latency output:
+
+p50 = 4 us
+p99 = 2 ms
+p999 = 2 ms
+
+############################################################################################################################################################
+
+
+EX:
+
+=== Latency Stats ===
+Count: 1000000
+Min: 2557 ns
+Mean: 115620 ns
+Max: 2293441 ns
+p50: 4096 ns
+p99: 2097152 ns
+p999: 2097152 ns
+Processed 100K messages | Gaps: 0
+
+=== Latency Stats ===
+Count: 1000000
+Min: 2557 ns
+Mean: 114403 ns
+Max: 2293441 ns
+p50: 4096 ns
+p99: 2097152 ns
+p999: 2097152 ns
+Processed 100K messages | Gaps: 0
+
+=== Latency Stats ===
+Count: 1000000
+Min: 2557 ns
+Mean: 114506 ns
+Max: 2293441 ns
+p50: 4096 ns
+p99: 2097152 ns
+p999: 2097152 ns
+Processed 100K messages | Gaps: 0
+
+=== Latency Stats ===
+Count: 1000000
+Min: 2557 ns
+Mean: 117237 ns
+Max: 2370699 ns
+p50: 4096 ns
+p99: 2097152 ns
+p999: 2097152 ns
+Processed 100K messages | Gaps: 0
+
+=== Latency Stats ===
+Count: 1000000
+Min: 2557 ns
+Mean: 117725 ns
+Max: 2500375 ns
+p50: 4096 ns
+p99: 2097152 ns
+p999: 2097152 ns
+Processed 100K messages | Gaps: 0
+
+=== Latency Stats ===
+Count: 1000000
+Min: 2557 ns
+Mean: 120343 ns
+Max: 2604581 ns
+p50: 4096 ns
+p99: 2097152 ns
+p999: 2097152 ns
+=== NSE Market Data Feed Handler ===
+
