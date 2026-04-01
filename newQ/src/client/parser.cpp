@@ -197,7 +197,7 @@ class Parser {
 
 			auto stats = tracker.get_stats();
 
-			tracker.export_csv("../latency.csv");
+			tracker.export_csv("latency.csv");
 
 			/*
 			   std::cout << "\n=== Latency Stats ===\n";
