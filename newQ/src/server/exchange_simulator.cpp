@@ -60,8 +60,8 @@ void  ExchangeSimulator::generate_ticks() {
 
 		double dW = ((double)rand()/RAND_MAX - 0.5);
 
-                // GBM price update
-		
+		// GBM price update
+
 
 		double Z = normal_random();
 		s.price *= exp((mu - 0.5 * s.sigma * s.sigma) * dt +
@@ -76,36 +76,28 @@ void  ExchangeSimulator::generate_ticks() {
 		alignas(64) char buffer[128] = {0};
 
 
-/*
+		/*
 
-		std::cout << sizeof(MessageHeader) << " "
-          << sizeof(Quote) << " "
-          << sizeof(Trade) << "\n";
-*/
-/*
-		MessageHeader *hdr = (MessageHeader*)buffer;
-		//auto* hdr = reinterpret_cast<MessageHeader*>(buffer);
-		//hdr->type = QUOTE;
-		hdr->seq = ++seq;
-		hdr->timestamp = now_ns();
-		hdr->symbol = i;
-*/
+		   std::cout << sizeof(MessageHeader) << " "
+		   << sizeof(Quote) << " "
+		   << sizeof(Trade) << "\n";
+		   */
 		MessageHeader hdr{};
-//hdr.type = QUOTE;
-hdr.seq = ++seq;
-hdr.timestamp = now_ns();
-hdr.symbol = i;
+		//hdr.type = QUOTE;
+		hdr.seq = ++seq;
+		hdr.timestamp = now_ns();
+		hdr.symbol = i;
 		size_t msg_size = sizeof(MessageHeader);
-  
-	       size_t offset = 0;
+
+		size_t offset = 0;
 		// 70% Quote, 30% Trade
 
 
 		if (rand() % 100 < 70) {
 			hdr.type = QUOTE;
 
-                // realistic spread (0.05%–0.2%)
- 
+			// realistic spread (0.05%–0.2%)
+
 			double spread = s.price * (0.0005 + ((double)rand()/RAND_MAX) * 0.0015);
 			Quote q{};
 			q.bid = s.price - spread / 2;
@@ -114,12 +106,12 @@ hdr.symbol = i;
 			q.ask_qty = 100 + rand() % 1000;
 
 			memcpy(buffer + offset, &hdr, sizeof(hdr));
-			
+
 			offset +=sizeof(hdr);
 
 			//memcpy(buffer + sizeof(hdr), &q, sizeof(q));
 			memcpy(buffer + offset, &q, sizeof(q));
-                        
+
 			offset+=sizeof(q);
 
 			msg_size += sizeof(Quote);
@@ -135,30 +127,19 @@ hdr.symbol = i;
 			t.qty = 100 + rand() % 1000;
 
 			memcpy(buffer + offset, &hdr, sizeof(hdr));
-			
-			 offset +=sizeof(hdr);
+
+			offset +=sizeof(hdr);
 
 			//memcpy(buffer + sizeof(hdr), &t, sizeof(t));
 			memcpy(buffer + offset, &t, sizeof(t));
-                         
-			  offset+=sizeof(t);
-	
+
+			offset+=sizeof(t);
+
 			msg_size += sizeof(Trade);
 		}
 
 
 
-		/*
-
-		//Quote *q = (Quote*)(buffer + sizeof(MessageHeader));
-		auto* q = reinterpret_cast<Quote*>(buffer + sizeof(MessageHeader));
-		q->bid = s.price * 0.999;
-		q->ask = s.price * 1.001;
-		q->bid_qty = 100;
-		q->ask_qty = 100;
-
-		size_t msg_size = sizeof(MessageHeader) + sizeof(Quote);
-		*/
 
 
 
@@ -173,7 +154,7 @@ hdr.symbol = i;
 		//memcpy(buffer + msg_size, &checksum, sizeof(uint32_t));
 		memcpy(buffer + offset, &checksum, sizeof(uint32_t));
 
-                    offset+=sizeof(uint32_t);
+		offset+=sizeof(uint32_t);
 
 		msg_size += sizeof(uint32_t);
 
@@ -192,11 +173,7 @@ uint64_t  ExchangeSimulator::now_ns() {
 }
 
 void  ExchangeSimulator::broadcast(void* data, size_t len) {
-//		 std::cout << "Sending message of size: " << len << "\n";
-	//	for (int fd : clients) {
-	//		send(fd, data, len, MSG_DONTWAIT);
-	//	}
-	//updated one.
+	//		 std::cout << "Sending message of size: " << len << "\n";
 
 	for (auto it = clients.begin(); it != clients.end(); ) {
 		int fd = *it;
@@ -208,7 +185,7 @@ void  ExchangeSimulator::broadcast(void* data, size_t len) {
 				std::cout << "Client disconnected: " << fd << "\n";
 
 				close(fd);
-				it = clients.erase(it);  // ✅ remove dead client
+				it = clients.erase(it);  // remove dead client
 				continue;
 			}
 		}
@@ -218,9 +195,9 @@ void  ExchangeSimulator::broadcast(void* data, size_t len) {
 }
 
 uint32_t ExchangeSimulator::compute_checksum(const char* data, size_t len) {
-    uint32_t x = 0;
-    for (size_t i = 0; i < len; i++) {
-        x ^= static_cast<uint8_t>(data[i]);
-    }
-    return x;
+	uint32_t x = 0;
+	for (size_t i = 0; i < len; i++) {
+		x ^= static_cast<uint8_t>(data[i]);
+	}
+	return x;
 }

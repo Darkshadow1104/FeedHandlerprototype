@@ -89,19 +89,20 @@ private:
                       return a.s.updates > b.s.updates;
                   });
 
-        //std::cout << "Symbol        Bid        Ask        LTP        Updates\n";
+        //std::cout << "Symbol        Bid         Ask           LTP             %Change          Updates\n";
 
 std::cout << std::fixed << std::setprecision(2);
 	std::cout << BOLD << YELLOW
           << std::left << std::setw(12) << "Symbol"
           << std::right << std::setw(12) << "Bid"
           << std::setw(12) << "Ask"
-          << std::setw(12) << "LTP"
-          << std::setw(12) << "Updates"
+          << std::setw(16) << "LTP"
+	  << std::setw(16) << "Chg%"
+          << std::setw(16) << "Updates"
           << RESET << "\n";
 	
 	
-	std::cout << "------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------------\n";
 
         int limit = std::min(20, (int)rows.size());
 
@@ -111,31 +112,28 @@ std::cout << std::fixed << std::setprecision(2);
 
 	    std::string color = YELLOW;
 
-	    if (r.s.last_price > r.s.prev_price)
-		    color = GREEN;
-	    else if (r.s.last_price < r.s.prev_price)
-		    color = RED;
+            color = (r.s.last_price > r.s.prev_price) ? GREEN : (r.s.last_price < r.s.prev_price) ? RED : color;
 
-
-
-
-
-
-           std::cout << std::left << std::setw(12) << symbols[r.id]
+            std::string changecolor = YELLOW;
+             
+	    double change = 0.0;
+	     
+             
+	     change = (r.s.prev_price > 0) ? (((r.s.last_price - r.s.prev_price) * 100.0)/ r.s.prev_price) : 0.0;
+	     
+	     changecolor = (change > 0) ? GREEN : RED;
+           
+             change = (change > 0) ? change : (-1.0)*change ; 	     
+	     
+	     std::cout << std::left << std::setw(12) << symbols[r.id]
           << std::right << std::setw(12) << std::fixed << std::setprecision(2) << GREEN <<r.s.bid << RESET
           << std::setw(12)<<  RED <<r.s.ask << RESET
-          << std::setw(12)<< color <<  r.s.last_price << RESET
-          << std::setw(12)<<  r.s.updates
+          << std::setw(16)<< color <<  r.s.last_price << RESET
+	  << std::setw(16)<< changecolor << change << RESET
+          << std::setw(16)<<  r.s.updates
           << "\n";
 	   
 
-/*
-	    std::cout << symbols[r.id] << "              "
-                      << GREEN <<r.s.bid << RESET <<"    "
-                      << RED <<r.s.ask << RESET <<"    "
-		      << color << r.s.last_price << RESET <<"     " 
-                      << r.s.updates << "\n";
-	    */
         }
 
         std::cout << "\nPress Ctrl+C to exit\n";
