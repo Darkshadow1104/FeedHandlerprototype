@@ -206,7 +206,7 @@ class Parser {
 
 		//	tracker.export_csv("latency.csv");
 
-			
+/*			
 			   std::cout << "\n=== Latency Stats ===\n";
 			   std::cout << "Count: " << stats.count << "\n";
 			   std::cout << "Min: " << stats.min << " ns\n";
@@ -215,7 +215,7 @@ class Parser {
 			   std::cout << "p50: " << stats.p50 << " ns\n";
 			   std::cout << "p99: " << stats.p99 << " ns\n";
 			   std::cout << "p999: " << stats.p999 << " ns\n";
-			   
+*/			   
 		}
 	}
 
