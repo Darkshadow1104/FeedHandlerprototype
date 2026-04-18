@@ -152,7 +152,6 @@ std::cout << "Received PING from fd=" << fd << std::endl;
 
     while (true) {
     int r = recv(fd, buf, sizeof(buf), 0);
-
     if (r <= 0) {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
             break;
@@ -162,6 +161,7 @@ std::cout << "Received PING from fd=" << fd << std::endl;
         break;
     }
 
+    std::cout<<"RECEIVING PONG: "<<r<<std::endl;
     if (strncmp(buf, "PING", 4) == 0) {
         send(fd, "PONG\n", 5, 0);
     }

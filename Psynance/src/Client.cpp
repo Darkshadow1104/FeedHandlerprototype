@@ -45,6 +45,84 @@ void Client::set_non_blocking(int fd) {
 }
 
 // ================= RECEIVER THREAD =================
+
+void Client::receiver() {
+    char buffer[BUFFER_SIZE];
+
+    while (running_) {
+        int n = recv(sock_, buffer, sizeof(buffer), 0);
+/*
+        if (n < 0) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+             //   std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                continue;
+            } else {
+                perror("recv error");
+                running_ = false;
+                break;
+            }
+        }
+*/
+        if (n == 0) {
+            std::cout << "Server Closed Connection.\n";
+            running_ = false;
+            close(sock_);
+            break;
+        }
+
+        auto now = std::chrono::steady_clock::now();
+        bool got_market_data = false;
+
+        // 🔥 Parse messages
+        int start = 0;
+        for (int i = 0; i < n; i++) {
+            if (buffer[i] == '\n') {
+                int len = i - start + 1;
+
+                if (len >= 4 && strncmp(buffer + start, "PONG", 4) == 0) {
+                    waiting_pong_ = false;   // ✅ only reset flag
+                } else {
+                    rb_->push(buffer + start, len);
+                    got_market_data = true;  // ✅ real data
+                }
+
+                start = i + 1;
+            }
+        }
+
+        // ✅ Update ONLY on market data
+        if (got_market_data) {
+            last_msg_.store(now);
+        }
+
+        // ---------- HEARTBEAT ----------
+        auto idle = std::chrono::duration_cast<std::chrono::seconds>(
+            now - last_msg_.load());
+
+        if (idle.count() >= 30 && !waiting_pong_) {
+            std::cout << "Sending PING\n";
+            send(sock_, "PING\n", 5, 0);
+
+            waiting_pong_ = true;
+            ping_time_.store(now);   // 🔥 FIXED
+        }
+
+        if (waiting_pong_) {
+            auto diff = std::chrono::duration_cast<std::chrono::seconds>(
+                now - ping_time_.load());
+
+            if (diff.count() >= 5) {
+                std::cout << "Server Crashed\n";
+                running_ = false;
+                close(sock_);
+                break;
+            }
+        }
+    }
+}
+
+
+/*
 void Client::receiver() {
 	char buffer[BUFFER_SIZE];
 
@@ -80,7 +158,7 @@ void Client::receiver() {
 			last_msg_ = now;
 		}		
 
-/*		
+//open		
 		if (n > 0) {
 			if (strncmp(buffer, "PONG", 4) == 0) {
 				waiting_pong_ = false;
@@ -89,7 +167,7 @@ void Client::receiver() {
 			}
 			last_msg_ = now;
 		}
-*/
+//close
 		// ---------- HEARTBEAT ----------
 		auto idle = std::chrono::duration_cast<std::chrono::seconds>(
 				now - last_msg_.load());
@@ -113,7 +191,7 @@ void Client::receiver() {
 		}
 	}
 }
-
+*/
 // ================= WRITER THREAD =================
 void Client::writer() {
     char msg[128];
